@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-example1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi_app
+  template:
+    metadata:
+      labels:
+        app: fastapi_app
+    spec:
+      containers:
+      - name: my-con1
+        image: harikrishnan586/fastapi:latest  # Replace with your Docker image URL
+        resources:
+          limits:
+            memory: "12Gi"  # Increased memory limit to 12GB
+        ports:
+        - name: http
+          containerPort: 8000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+spec:
+  selector:
+    app: fastapi_app
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8000
+    targetPort: 8000
+    nodePort: 30002  # Choose a port in the range 30000-32767 (or use "0" for a randomly allocated port)
